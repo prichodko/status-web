@@ -6,55 +6,34 @@ import { useMatch } from 'react-router-dom'
 import { MemberSidebar } from '../../components/member-sidebar'
 import { useAppState } from '../../contexts/app-context'
 import { ChatProvider, useChatContext } from '../../contexts/chat-context'
-import { useAccount, useChat, useMessages, useProtocol } from '../../protocol'
+import { useAccount, useMessages, useProtocol } from '../../protocol'
 import { styled } from '../../styles/config'
-import { Avatar, Flex, Heading, Text } from '../../system'
 import { ChatInput } from './components/chat-input'
 import { ChatMessage } from './components/chat-message'
+import { DateDivider } from './components/date-divider'
+import { LoadingToast } from './components/loading-toast'
+import { MessageLoader } from './components/message-loader'
 import { Navbar } from './components/navbar'
 
-interface ChatStartProps {
-  chatId: string
-}
+// interface ChatStartProps {
+//   chatId: string
+// }
 
-const ChatStart = (props: ChatStartProps) => {
-  const { chatId } = props
+// const ChatStart = (props: ChatStartProps) => {
+//   const { chatId } = props
 
-  const { identity } = useChat(chatId)
+//   const { identity } = useChat(chatId)
 
-  return (
-    <Flex direction="column" gap="3" align="center" css={{ marginBottom: 50 }}>
-      <Avatar size={120} name={identity?.displayName} color={identity?.color} />
-      <Heading>{identity?.displayName}</Heading>
-      <Text>
-        Welcome to the beginning of the #{identity?.displayName} channel!
-      </Text>
-    </Flex>
-  )
-}
-
-const DateDivider = (props: { date: Date }) => {
-  const { date } = props
-
-  let label = date.toLocaleDateString([], { weekday: 'long' })
-
-  const today = new Date()
-  const yesterday = new Date().setDate(today.getDate() - 1)
-
-  if (isSameDay(date, today)) {
-    label = 'Today'
-  } else if (isSameDay(date, yesterday)) {
-    label = 'Yesterday'
-  }
-
-  return (
-    <Flex justify="center" css={{ padding: '18px 0 8px' }}>
-      <Text size="13" color="gray">
-        {label}
-      </Text>
-    </Flex>
-  )
-}
+//   return (
+//     <Flex direction="column" gap="3" align="center" css={{ marginBottom: 50 }}>
+//       <Avatar size={120} name={identity?.displayName} color={identity?.color} />
+//       <Heading>{identity?.displayName}</Heading>
+//       <Text>
+//         Welcome to the beginning of the #{identity?.displayName} channel!
+//       </Text>
+//     </Flex>
+//   )
+// }
 
 const Body = () => {
   const { client } = useProtocol()
@@ -68,6 +47,8 @@ const Body = () => {
   const messages = useMessages(chatId)
 
   const contentRef = useRef<HTMLDivElement>(null)
+
+  // scroll to bottom when new messages are added
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     contentRef.current!.scrollTop = contentRef.current!.scrollHeight ?? 0
@@ -80,35 +61,38 @@ const Body = () => {
   return (
     <>
       <ContentWrapper ref={contentRef}>
-        <ChatStart chatId={chatId} />
-        {/* temporary */}
-        <div style={{ textAlign: 'center' }}>
-          <button
-            type="button"
-            onClick={messages.fetchMore}
-            disabled={messages.loading}
-          >
-            {messages.loading ? 'Loading...' : 'Load more'}
-          </button>
-        </div>
+        {messages.loading && <LoadingToast label="last 30 days" />}
+
+        {messages.loading && (
+          <>
+            <MessageLoader />
+            <MessageLoader />
+            <MessageLoader />
+          </>
+        )}
+
         {messages.data.map((message, index) => {
           const sentDate = new Date(Number(message.timestamp))
-          const prevMessage = messages.data[index - 1]
+          const previousMessage = messages.data[index - 1]
+          previousMessage.timestamp
 
-          let showDate = index === 0 // always show date for the first message
+          let hasDateSeparator = true
 
-          if (prevMessage) {
-            const prevSentDate = new Date(Number(prevMessage.timestamp))
-            showDate = !isSameDay(prevSentDate, sentDate) // show date if it's not the same day
+          if (previousMessage) {
+            const prevSentDate = new Date(Number(previousMessage.timestamp))
+
+            if (isSameDay(prevSentDate, sentDate)) {
+              hasDateSeparator = false
+            }
           }
+
+          const shouldCollapse =
+            !message.responseTo && message.signer === previousMessage?.signer
 
           return (
             <Fragment key={message.messageId}>
-              {showDate && <DateDivider date={sentDate} />}
-              <ChatMessage
-                message={message}
-                prevSigner={showDate ? undefined : prevMessage?.signer}
-              />
+              {hasDateSeparator && <DateDivider date={sentDate} />}
+              <ChatMessage message={message} collapse={shouldCollapse} />
             </Fragment>
           )
         })}

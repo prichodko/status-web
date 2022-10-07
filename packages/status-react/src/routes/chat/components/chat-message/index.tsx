@@ -31,7 +31,7 @@ import type { Message, Reaction } from '../../../../protocol'
 
 interface Props {
   message: Message
-  prevSigner?: Message['signer']
+  collapse: boolean
 }
 
 // const MessageLink = forwardRef(function MessageLink(
@@ -56,11 +56,12 @@ interface Props {
 // })
 
 export const ChatMessage = (props: Props) => {
+  const { message, collapse } = props
+
   const { client, account } = useProtocol()
   const { params } = useMatch(':id')!
 
   const chatId = params.id!
-  const { message, prevSigner } = props
 
   const mention = false
   const pinned = false
@@ -74,8 +75,6 @@ export const ChatMessage = (props: Props) => {
 
   const member = client.community.getMember(signer)!
   const response = client.community.getChat(params.id!)!.getMessage(responseTo)
-
-  const collapse = !response && signer === prevSigner
 
   const [editing, setEditing] = useState(false)
   const [reacting, setReacting] = useState(false)
@@ -186,71 +185,19 @@ export const ChatMessage = (props: Props) => {
     return (
       <Flex gap={2}>
         <Box>
-          {/* <DropdownMenuTrigger>
-                <button type="button"> */}
           <Avatar
             size={44}
             name={member!.username}
             colorHash={member!.colorHash}
           />
-          {/* </button> */}
-          {/* <DropdownMenu>
-=======
-  const renderMessage = () => {
-    if (collapse) {
-      return <Box css={{ flex: 1, paddingLeft: 52 }}>{renderContent()}</Box>
-    }
-
-    return (
-      <Flex gap={2}>
-        <Box>
-          {/* <DropdownMenuTrigger>
-                <button type="button"> */}
-          <Avatar
-            size={44}
-            name={member!.username}
-            colorHash={member!.colorHash}
-          />
-          {/* </button> */}
-          {/* <DropdownMenu>
->>>>>>> aa0fc35 (collapse messages if signer is same)
-                  <Flex direction="column" align="center" gap="1">
-                    <Avatar size="36" />
-                    <Text>{member!.username}</Text>
-                    <EmojiHash />
-                  </Flex>
-                  <DropdownMenu.Separator />
-                  <DropdownMenu.Item
-                    icon={<BellIcon />}
-                    onSelect={() => userProfileDialog.open({ member })}
-                  >
-                    View Profile
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item icon={<BellIcon />}>
-                    Send Message
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item icon={<BellIcon />}>
-                    Verify Identity
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item icon={<BellIcon />}>
-                    Send Contact Request
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Separator />
-                  <DropdownMenu.Item icon={<BellIcon />} danger>
-                    Mark as Untrustworthy
-                  </DropdownMenu.Item>
-                </DropdownMenu>
-              </DropdownMenuTrigger> */}
         </Box>
 
         <Box css={{ flex: 1 }}>
           {/* {pinned && (
-=======
         </Box>
 
         <Box css={{ flex: 1 }}>
           {/* {pinned && (
->>>>>>> aa0fc35 (collapse messages if signer is same)
                 <Flex gap={1}>
                   <PinIcon width={8} />
                   <Text size="13">Pinned by {contact.name}</Text>
@@ -304,12 +251,6 @@ export const ChatMessage = (props: Props) => {
           />
         )}
       </Wrapper>
-      {/*
-        <ContextMenu>
-          <ContextMenu.Item onSelect={handleReplyClick}>Reply</ContextMenu.Item>
-          <ContextMenu.Item onSelect={handlePinClick}>Pin</ContextMenu.Item>
-        </ContextMenu> */}
-      {/* </ContextMenuTrigger> */}
     </>
   )
 }
