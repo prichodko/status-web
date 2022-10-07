@@ -6,8 +6,9 @@ import { useMatch } from 'react-router-dom'
 import { MemberSidebar } from '../../components/member-sidebar'
 import { useAppState } from '../../contexts/app-context'
 import { ChatProvider, useChatContext } from '../../contexts/chat-context'
-import { useAccount, useMessages, useProtocol } from '../../protocol'
+import { useAccount, useChat, useMessages, useProtocol } from '../../protocol'
 import { styled } from '../../styles/config'
+import { Avatar, Flex, Heading, Text } from '../../system'
 import { ChatInput } from './components/chat-input'
 import { ChatMessage } from './components/chat-message'
 import { DateDivider } from './components/date-divider'
@@ -15,25 +16,25 @@ import { LoadingToast } from './components/loading-toast'
 import { MessageLoader } from './components/message-loader'
 import { Navbar } from './components/navbar'
 
-// interface ChatStartProps {
-//   chatId: string
-// }
+interface ChatStartProps {
+  chatId: string
+}
 
-// const ChatStart = (props: ChatStartProps) => {
-//   const { chatId } = props
+const ChatStart = (props: ChatStartProps) => {
+  const { chatId } = props
 
-//   const { identity } = useChat(chatId)
+  const { identity } = useChat(chatId)
 
-//   return (
-//     <Flex direction="column" gap="3" align="center" css={{ marginBottom: 50 }}>
-//       <Avatar size={120} name={identity?.displayName} color={identity?.color} />
-//       <Heading>{identity?.displayName}</Heading>
-//       <Text>
-//         Welcome to the beginning of the #{identity?.displayName} channel!
-//       </Text>
-//     </Flex>
-//   )
-// }
+  return (
+    <Flex direction="column" gap="3" align="center" css={{ marginBottom: 50 }}>
+      <Avatar size={120} name={identity?.displayName} color={identity?.color} />
+      <Heading>{identity?.displayName}</Heading>
+      <Text>
+        Welcome to the beginning of the #{identity?.displayName} channel!
+      </Text>
+    </Flex>
+  )
+}
 
 const Body = () => {
   const { client } = useProtocol()
@@ -58,46 +59,52 @@ const Body = () => {
     chat.sendTextMessage(message, state.reply?.message.messageId)
   }
 
+  const renderContent = () => {
+    if (messages.loading) {
+      return (
+        <>
+          <LoadingToast label="last 30 days" />
+
+          <MessageLoader />
+          <MessageLoader />
+          <MessageLoader />
+        </>
+      )
+    }
+
+    if (messages.data.length === 0) {
+      return <ChatStart chatId={chatId} />
+    }
+
+    return messages.data.map((message, index) => {
+      const sentDate = new Date(Number(message.timestamp))
+      const previousMessage = messages.data[index - 1]
+
+      let hasDateSeparator = true
+
+      if (previousMessage) {
+        const prevSentDate = new Date(Number(previousMessage.timestamp))
+
+        if (isSameDay(prevSentDate, sentDate)) {
+          hasDateSeparator = false
+        }
+      }
+
+      const shouldCollapse =
+        !message.responseTo && message.signer === previousMessage?.signer
+
+      return (
+        <Fragment key={message.messageId}>
+          {hasDateSeparator && <DateDivider date={sentDate} />}
+          <ChatMessage message={message} collapse={shouldCollapse} />
+        </Fragment>
+      )
+    })
+  }
+
   return (
     <>
-      <ContentWrapper ref={contentRef}>
-        {messages.loading && <LoadingToast label="last 30 days" />}
-
-        {messages.loading && (
-          <>
-            <MessageLoader />
-            <MessageLoader />
-            <MessageLoader />
-          </>
-        )}
-
-        {messages.data.map((message, index) => {
-          const sentDate = new Date(Number(message.timestamp))
-          const previousMessage = messages.data[index - 1]
-          previousMessage.timestamp
-
-          let hasDateSeparator = true
-
-          if (previousMessage) {
-            const prevSentDate = new Date(Number(previousMessage.timestamp))
-
-            if (isSameDay(prevSentDate, sentDate)) {
-              hasDateSeparator = false
-            }
-          }
-
-          const shouldCollapse =
-            !message.responseTo && message.signer === previousMessage?.signer
-
-          return (
-            <Fragment key={message.messageId}>
-              {hasDateSeparator && <DateDivider date={sentDate} />}
-              <ChatMessage message={message} collapse={shouldCollapse} />
-            </Fragment>
-          )
-        })}
-      </ContentWrapper>
-
+      <ContentWrapper ref={contentRef}>{renderContent()}</ContentWrapper>
       {account && <ChatInput onSubmit={handleMessageSubmit} />}
     </>
   )
