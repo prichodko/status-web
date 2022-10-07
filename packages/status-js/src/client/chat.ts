@@ -236,9 +236,10 @@ export class Chat {
       return
     }
 
-    if (!this.#messages.size) {
-      return
-    }
+    // fixme?: to stop the loading we need to let the listeners know even if there are no messages
+    // if (!this.#messages.size) {
+    //   return
+    // }
 
     const messages = this.getMessages()
 
