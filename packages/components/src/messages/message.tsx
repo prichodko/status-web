@@ -1,10 +1,13 @@
 import { useState } from 'react'
 
+import { AlertIcon } from '@status-im/icons/12'
 import { PinIcon } from '@status-im/icons/16'
+import { DeleteIcon, RefreshIcon } from '@status-im/icons/20'
 import { Stack, styled, Unspaced, XStack, YStack } from 'tamagui'
 
 import { Author } from '../author'
 import { Avatar } from '../avatar'
+import { DropdownMenu } from '../dropdown-menu'
 import { Image } from '../image'
 import { useChatDispatch } from '../provider'
 import { Reply } from '../reply'
@@ -21,6 +24,7 @@ export interface MessageProps {
   reactions: ReactionsType
   reply?: boolean
   pinned?: boolean
+  failed?: boolean
 }
 
 const Base = styled(Stack, {
@@ -31,6 +35,12 @@ const Base = styled(Stack, {
   alignItems: 'flex-start',
 
   variants: {
+    failed: {
+      true: {
+        backgroundColor: '$danger-50-opa-5',
+      },
+    },
+
     active: {
       true: {
         backgroundColor: '$neutral-5',
@@ -46,7 +56,7 @@ const Base = styled(Stack, {
 })
 
 const Message = (props: MessageProps) => {
-  const { text, images, reactions, reply, pinned } = props
+  const { text, images, reactions, reply, pinned, failed } = props
 
   const [hovered, setHovered] = useState(false)
   const [showActions, setShowActions] = useState(false)
@@ -61,6 +71,7 @@ const Message = (props: MessageProps) => {
     <Base
       active={active}
       pinned={pinned}
+      failed={failed}
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
     >
@@ -137,6 +148,41 @@ const Message = (props: MessageProps) => {
               <Image src={image.url} width="full" height={320} radius={12} />
             </Stack>
           ))}
+
+          {failed && (
+            <DropdownMenu>
+              <Stack
+                flexDirection="row"
+                space={4}
+                alignItems="center"
+                paddingTop={2}
+                width={100}
+              >
+                <AlertIcon color="$danger-50" />
+                <Text size={11} color="$danger-50">
+                  Failed to send
+                </Text>
+              </Stack>
+              <DropdownMenu.Content side="right">
+                <DropdownMenu.Item
+                  label="Retry"
+                  icon={<RefreshIcon />}
+                  onSelect={() => {
+                    console.log('retry')
+                  }}
+                />
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item
+                  label="Remove message"
+                  icon={<DeleteIcon />}
+                  onSelect={() => {
+                    console.log('remove')
+                  }}
+                  danger
+                />
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          )}
 
           {hasReactions && (
             <Stack paddingTop={8}>

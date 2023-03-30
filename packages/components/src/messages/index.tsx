@@ -74,6 +74,7 @@ export const Messages = () => {
         text="Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam.  "
         reactions={{}}
         id="1234-1241"
+        failed
       />
       <Message
         text="Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim.sit"
