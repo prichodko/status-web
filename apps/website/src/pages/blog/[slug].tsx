@@ -114,6 +114,7 @@ export const getStaticProps: GetStaticProps<
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 
 const BlogDetailPage: Page<Props> = ({ post, relatedPosts }) => {
+  console.log('post:', post)
   const author = post.primary_author!
 
   // todo?: MOVE TO SERVER SIDE
@@ -200,8 +201,13 @@ const BlogDetailPage: Page<Props> = ({ post, relatedPosts }) => {
         />
       </div>
 
-      <div className="mx-auto flex max-w-2xl flex-col gap-12 px-5 py-6">
-        {result}
+      <div
+        className="mx-auto flex max-w-2xl flex-col gap-12 px-5 py-6"
+        dangerouslySetInnerHTML={{
+          __html: post.html!,
+        }}
+      >
+        {/* {result} */}
       </div>
 
       <div className="mx-auto flex max-w-2xl flex-col gap-[17px] px-5 py-6">

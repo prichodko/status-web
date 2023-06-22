@@ -1,0 +1,801 @@
+"
+<p>
+  Nimbus has released a production-ready version of its validator client,
+  addressing a key demand from node operators and advanced users. The client is
+  highly performant and requires low resources, allowing it to run on a range of
+  devices <strong>—</strong> from embedded systems to enterprise servers.
+</p>
+<p>
+  By default, the Nimbus consensus client's design allows validators to be run
+  directly from the beacon node, simplifying validator setup. This makes it an
+  ideal choice for solo-stakers, and select node operators that want to use the
+  Nimbus beacon node. However, it made it difficult for operators to use Nimbus
+  in their existing setups, which often feature one or more client beacon nodes
+  interacting with multiple validator clients.
+</p>
+<p>
+  For example, one node operator runs a Teku beacon node with Teku and LH
+  validator clients. Another operator runs a Vouch-based setup with four
+  different client beacon nodes and a Vouch validator client. This also includes
+  node operators in the Rocket Pool network that run several mini-pools. Each
+  operator has fine-tuned their setup for redundancy, performance and resource
+  consistency. It was understandably challenging for these users to directly use
+  the default Nimbus setup of an integrated beacon node and validator client,
+  which would mean a completely different stack to maintain and manage.
+</p>
+<p>
+  <a href="https://github.com/status-im/nimbus-eth2/releases"
+    >Release v22.11.0</a
+  >
+  allows users to run the Nimbus validator client independently with beacon
+  nodes from other clients, giving operators greater flexibility and the ability
+  to introduce Nimbus into their existing setups with minimal change. This
+  configuration is ideal for operators running hundreds to thousands of
+  validators.
+</p>
+<p>
+  Additionally, the new release includes improvements and fixes. For example,
+  the beacon node is now compatible with validator clients taking advantage of
+  the <code>/eth/v1/beacon/blinded_blocks</code> endpoint, and enables much
+  faster loading of the validator keystore during startup.
+</p>
+<p>
+  Nimbus's privacy characteristics, including its low public profile and support
+  for publishing blocks to separate nodes (such that the validator cannot be
+  matched to its IP address by listening to attestation traffic), make it an
+  attractive choice for advanced users and node operators.
+</p>
+<p>
+  The Nimbus team will continue to support and improve the standalone beacon
+  node setup for individual users and hope to see more operators include the
+  Nimbus validator client in their fleet to improve overall client diversity
+  across the Ethereum network.
+</p>
+<hr />
+<p>
+  <em
+    >Check our blog and follow our social channels to stay up to date with all
+    the latest Nimbus ecosystem developments:
+  </em>
+</p>
+<ul>
+  <li><a href="https://our.status.im/tag/nimbus/">Blog</a></li>
+  <li><a href="https://twitter.com/ethnimbus">Twitter</a></li>
+  <li><a href="https://discord.com/invite/qnjVyhatUa">Discord</a></li>
+  <li><a href="https://github.com/status-im">GitHub</a><br /><br /></li>
+</ul>
+" "
+<blockquote>
+  <strong
+    >But is your smart home safe to live in? And how can you protect your
+    privacy when your fridge is harvesting your data?</strong
+  ><br /><a href="https://nordvpn.com/blog/smart-home-privacy-concerns/"
+    >https://nordvpn.com/blog/smart-home-privacy-concerns/</a
+  >
+</blockquote>
+<p>
+  The Amazon-iRobot acquisition has prompted us all to consider (or reconsider,
+  for many of us) a new dimension of privacy. We are so often concerned with—and
+  building for the purposes of—online privacy, that we have been less focused on
+  a different type of privacy invasion.
+</p>
+<p>
+  Privacy in your own home is under attack. Unlike the privacy compromises
+  required by many web2 services, however, this is privacy that can usually be
+  maintained at virtually no cost. Virtually no cost—that is, unless you are
+  already reliant upon smart appliances.
+</p>
+<h2 id="what-is-a-smart-appliance">What is a smart appliance?</h2>
+<p>
+  If you have been anywhere on the internet since about 2014, you are probably
+  familiar with some of the earliest general purpose smart appliances—for
+  example, Amazon Echo/Alexa or Google’s Nest. Or perhaps you (or someone you
+  know) have used more specialized products—some of which have been around much
+  longer. Take, for example, the Roomba autonomous vacuum, which has been for
+  sale for almost 20 years, or smart watches, or key chains, or doorbells, or
+  light bulbs.
+</p>
+<p>
+  Or the most ubiquitous smart “appliance” of all—a smart phone. Of course,
+  privacy concerns regarding mobile phones are a well-covered topic, but they
+  fit the wider theme of smart appliances creating avenues for abuse of consumer
+  data and privacy.
+</p>
+<h2 id="what%E2%80%99s-the-big-deal">What’s the big deal?</h2>
+<p>
+  Take the
+  <a href="https://about.irobot.com/Legal/Privacy-Policy">privacy policy</a> for
+  the autonomous vacuum, Roomba. From this policy we may find that some Roomba
+  models can “transmit data wirelessly to the Service . . . . stored in a
+  deidentified state (separated from identifiable information).”
+</p>
+<p>
+  It <em>should</em> be a comfort that the data is stored in a “deidentified
+  state,” but by now we should all know that
+  <a href="https://news.mit.edu/2018/privacy-risks-mobility-data-1207"
+    >anonymous data</a
+  >
+  <a href="https://en.wikipedia.org/wiki/Data_re-identification">is often</a>
+  <a
+    href="https://www.theguardian.com/technology/2019/jul/23/anonymised-data-never-be-anonymous-enough-study-finds"
+    >easily reidentified</a
+  >.
+</p>
+<p>
+  Roombas may collect “information about the robot's movement throughout the
+  environment <strong>to create a location "map"</strong> of the Robot’s domain
+  and
+  <strong>the existence and type of objects (chair, desk, fridge etc.)</strong>
+  or obstacles encountered” as well as “Wi-Fi signal strength in each location,”
+  and “device data, such as MAC address, device type, device name, identifier,
+  serial number, product code, network bandwidth usage, and device location
+  within and near the home.”
+</p>
+<p>
+  Roombas may also try to guess what various objects around your house/flat, or
+  connected to your wi-fi are: “types of objects (detected using the camera on
+  your Robot) along with a corresponding confidence factor for that object and
+  its location, the location and confidence factor of Wi-Fi devices connected to
+  your local network, and Wi-Fi heat maps.”
+</p>
+<p>
+  It might seem silly to think that the little robot vacuum is doing all of
+  this, but it’s not at all silly to think that iRobot, or Amazon, might now
+  have the most detailed floor plans of your dwelling that have ever existed.
+</p>
+<p>
+  Speaking of Amazon, we haven’t forgotten about the Ring debacle. Amazon’s Ring
+  is a smart doorbell that enables you to see who’s at the door—just by checking
+  your phone. It also records footage that Amazon might give to law enforcement,
+  as they
+  <a
+    href="https://arstechnica.com/tech-policy/2022/07/amazon-finally-admits-giving-cops-ring-doorbell-data-without-user-consent/"
+    >already have at least 11 times so far this year</a
+  >.
+</p>
+<p>From <a href="https://ring.com/privacy-notice">Ring’s privacy policy</a>:</p>
+<blockquote>
+  [We collect] Content (and related information) that is captured and recorded
+  when using our products and services, such as
+  <strong>video or audio recordings, live video or audio streams</strong>,
+  images, comments, and data our products collect from their surrounding
+  environment to perform their functions (such as motion, events, temperature
+  and ambient light).
+</blockquote>
+<p>(emphasis added)</p>
+<p>
+  Or consider the aforementioned Google Nest. Nest represents a suite of
+  products, from smart speakers to thermostats to cameras and more.
+</p>
+<blockquote>
+  We believe the best way to earn your trust is to keep you in control of your
+  information. We only share personal information when you explicitly give
+  permission. When you do give us this permission, we also let you know what
+  personal info we’re sharing and why. And you can stop sharing your personal
+  information at any time.<br /><a href="https://nest.com/privacy/"
+    >https://nest.com/privacy/</a
+  >
+</blockquote>
+<p>
+  But are you really in control? Note that you have no say in terms of what data
+  they <em>collect</em>, merely what they <em>share</em>.
+</p>
+<p>
+  In fairness, Nest’s
+  <a
+    href="https://nest.com/legal/privacy-statement-for-nest-products-and-services/"
+    >privacy policy</a
+  >
+  actually seems quite a bit less egregious than that of Amazon’s Ring, or
+  Roomba (at least in the author’s estimation)—but there’s a not-so-small
+  problem:
+</p>
+<blockquote>
+  Note: If you use your Nest devices and services with a Google Account, then
+  your data will be handled as described in the Google Privacy Policy
+</blockquote>
+<p>
+  And we should all know that Google
+  <a
+    href="https://www.cnet.com/home/security/ring-google-and-the-police-what-to-know-about-emergency-requests-for-video-footage/"
+    >does not have the greatest record</a
+  >
+  when it comes to consumer privacy.
+</p>
+<h2 id="what%E2%80%99s-the-solution">What’s the solution?</h2>
+<p>
+  Don’t use smart appliances! Or if you do, keep them disconnected from the
+  internet. If you must use an internet-connected smart appliance, read their
+  privacy policy, be aware of what sacrifices in terms of privacy or anonymity
+  you are making for the sake of convenience, and keep in mind that they may
+  still end up mishandling your data, or leaking it, or providing it to the
+  government without your consent or a warrant.
+</p>
+<p>
+  Not everyone values privacy to the extent that we do—we understand this, but
+  it’s up to us (you too) to make sure that everyone understands the
+  consequences of surrendering it. Talk to your friends and family about their
+  smart appliances, if they have any. Don’t drown them in articles or arguments.
+  Be persistent, not overbearing. Ask if they would allow a stranger, or a group
+  of strangers, to sit in their home and listen to them in case they wanted to
+  play a Spotify playlist, or place an Amazon order—or vacuum their house.
+</p>
+<p>
+  To be utterly clear, we are not in the least opposed to technological
+  advancement, automation, or even smart appliances themselves. We think
+  autonomous vacuums, automatically adjusting lights, and voice-activated
+  appliances are cool—really cool. But such tech offers unique opportunities for
+  the exploitation of consumer privacy—and many companies are ravenously taking
+  advantage of these opportunities.
+</p>
+<p>They are failing you.</p>
+" "
+<h2 id="tldr">TL;DR</h2>
+<p>
+  If you registered a stateofus.eth name in the Status app before October 31,
+  2021, then you can collect $ENS as part of this voluntary redistribution.
+  Check if you’re eligible and collect ENS tokens at
+  <u
+    ><a href="https://ens-collect.status.im/"
+      >https://ens-collect.status.im</a
+    ></u
+  >. You can collect your tokens over a period of 3 months, between Tuesday July
+  5th 15:00 UTC and Oct 5th 15:00 UTC.
+</p>
+<hr />
+<p>
+  On Nov. 8th, 2021, Status was allocated 46,296.3 ENS tokens as a thank you for
+  the early integration of the Ethereum Name Service (ENS) into the Status
+  ecosystem. In Status you can:
+</p>
+<!--kg-card-begin: markdown-->
+<ul>
+  <li>Register a stateofus.eth subdomain name</li>
+  <li>Connect an existing ENS or stateofus.eth subdomain name to your chat</li>
+  <li>Allow others to send messages to your ENS name</li>
+  <li>Allow others to send tokens to your ENS name</li>
+</ul>
+<!--kg-card-end: markdown-->
+<p>
+  The $ENS allocation was part of an airdrop
+  <a href="https://ens.mirror.xyz/cfvfKRpQSPtZJjPQOprWqEeqv2rytE7tQkxDg6ht7Oo"
+    ><u>announced</u></a
+  >
+  by the ENS team on November 1st, 2021 as part of its transition into a DAO to
+  govern the ENS protocol.
+</p>
+<p>
+  The airdrop distributed tokens to <em>users</em>, i.e. addresses that had
+  registered a .eth name, and <em>contributors</em>, i.e. individuals and
+  organizations that contributed in significant ways to ENS over the prior four
+  years; No tokens were distributed to users that had registered a subdomain,
+  such as a stateofus.eth name (as the main purpose was to govern .eth).
+</p>
+<p>
+  In this
+  <a
+    href="https://discuss.status.im/t/governance-discussion-re-distribution-of-ens-token-allocation/2344"
+    ><u>discuss post</u></a
+  >, @petty laid out reasons for $ENS allocated to Status, to be redistributed
+  to those who registered a stateofus.eth name:
+</p>
+<!--kg-card-begin: markdown-->
+<ul>
+  <li>
+    <em
+      >The developers of features that incentivize the use of SNT should be
+      rewarded commensurate to the growth of the feature. This is a fundamental
+      idea behind development and reward in Web3.</em
+    >
+  </li>
+  <li>
+    <em
+      >The users of an incentivized feature (particularly early and earnest
+      ones) should be rewarded for their contribution and engagement.</em
+    >
+  </li>
+  <li>
+    <em
+      >As ENS is primarily a public good, the distribution of its governance
+      token should be maximally distributed across its users, thus our oversized
+      allocation as an organization should not be wielded by only a few
+      individuals.</em
+    >
+  </li>
+  <li>
+    <em
+      >ENS usernames in Status are fully owned by their registrants while their
+      SNT is locked up in the smart contract. It can be argued that the
+      allocation does not fully belong to the Status organization, but also to
+      those that have used the username feature, as the airdrop did not include
+      subdomain accounts. That argument is hinged upon whether not the ENS team
+      feels it is the responsibility of the feature implementer to equally
+      handle that distribution, as all subdomain use across ENS is not equal and
+      outside the scope of the ENS team to decide.</em
+    >
+  </li>
+</ul>
+<!--kg-card-end: markdown-->
+<p>
+  A
+  <a
+    href="https://snapshot.org/#/status/proposal/0xffc40f92cfde912fc7e0a9f9875db93ff12b04dc2e920e875e4b9e92cf22180d"
+    ><u>proposal</u></a
+  >
+  on how to manage redistribution was made and accepted with 99.99% of voting
+  power. As a result of this proposal and efforts by @petty and @gravityblast,
+  you can now collect $ENS, subject to Terms and Conditions.
+</p>
+<h2 id="am-i-eligible-to-collect-ens">Am I eligible to collect $ENS?</h2>
+<p>
+  If you registered at least one stateofus.eth name before October 31st, 2021,
+  <strong>then</strong> <strong>you are eligible</strong>.
+</p>
+<p>
+  Note that if you registered a .eth before October 31st, 2021 you
+  <em>were </em>eligible to collect $ENS through
+  <a href="https://claim.ens.domains/"><u>https://claim.ens.domains/</u></a
+  >. The airdrop finished on May 4th, 2022 and $ENS can no longer be claimed for
+  .eth names. This was mentioned in the original discuss post.
+</p>
+<h4 id="how-much-do-i-get">How much do I get?</h4>
+<p>
+  The amount you receive is weighted by time. The longer you’ve held your
+  stateofus.eth name, the more $ENS you’ll receive. If you’ve registered
+  multiple names on a given address, the name that you’ve registered and held
+  longest at any time up until Oct 31st counts. If you’ve registered names from
+  different addresses, you can collect $ENS using each address. Having multiple
+  names registered with a single address does not increase the amount.
+</p>
+<p>
+  This logic follows
+  <a
+    href="https://snapshot.org/#/status/proposal/0xffc40f92cfde912fc7e0a9f9875db93ff12b04dc2e920e875e4b9e92cf22180d"
+    ><u>the proposal on Snapshot</u></a
+  >
+  which was accepted with 99.99% of voting power.
+</p>
+<h4 id="what%E2%80%99s-the-benefit-of-collecting-ens">
+  What’s the benefit of collecting $ENS?
+</h4>
+<p>
+  $ENS is a governance token. While it holds value and can be traded, its
+  purpose is to
+  <a href="https://ens.mirror.xyz/-eaqMv7XPikvXhvjbjzzPNLS4wzcQ8vdOgi9eNXeUuY"
+    ><u>govern the ENS protocol</u></a
+  >
+  in line with the ENS DAO’s
+  <a href="https://constitution.ens.domains/"><u>constitution</u></a
+  >. After receiving your $ENS, don’t forget to
+  <a href="https://claim.ens.domains/delegate-ranking"><u>delegate</u></a
+  >! We of course recommend an ENS steward that is one of our very own,
+  <a
+    href="https://discuss.ens.domains/t/ens-dao-delegate-applications/815/444?u=pop"
+    ><u>Simona Pop</u></a
+  >!
+</p>
+<h4 id="how-can-i-collect-ens">How can I collect $ENS?</h4>
+<figure class="kg-card kg-embed-card">
+  <iframe
+    width="200"
+    height="113"
+    src="https://www.youtube.com/embed/uwzR91aC2EI?feature=oembed"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    title="ENS Claim Demo"
+  ></iframe>
+</figure>
+<!--kg-card-begin: markdown-->
+<ol>
+  <li>Open the Status app</li>
+  <li>Make sure you have a bit of ETH to cover gas (~$8 at time of writing)</li>
+  <li>
+    Open
+    <a href="https://ens-collect.status.im">https://ens-collect.status.im</a> in
+    Status browser (or any other Web3-enabled browser)
+  </li>
+  <li>Connect your wallet</li>
+  <li>View amount and select 'Collect'</li>
+  <li>
+    Sign transaction (check contract address:
+    0xBB85398092B83A016935a17Fc857507b7851a071)
+  </li>
+  <li>
+    Add token manually (optional). It might take some time for $ENS to show in
+    your wallet. This is normal. To see the token appear faster add it manually
+    (see <a href="https://discuss.status.im/c/ens-redistribution/70">FAQ</a>)
+  </li>
+</ol>
+<!--kg-card-end: markdown-->
+<p>
+  You can check eligibility and collect in any other Web3 enabled browsers,
+  or—for example—MetaMask or Frame. Just make sure to connect the account you
+  used to register a stateofus.eth name. For this reason, we suggest using
+  Status as chances are higher that you used a Status account to register a
+  stateofus.eth name.
+</p>
+<h4 id="have-questions-or-a-problem">Have questions or a problem?</h4>
+<p>
+  First, you should make sure you’ve followed all the appropriate steps to
+  collect your ENS tokens. If something is still wrong, you should check the
+  <a href="https://discuss.status.im/c/ens-redistribution/70"
+    ><u>FAQ discuss forum</u></a
+  >
+  that will continuously be updated with common problems that we may not have
+  foreseen.
+</p>
+<p>
+  If that doesn’t solve your issue, please ask a question either in the #support
+  channel on the
+  <a href="https://discord.gg/HGSAcAHGMA">Status Community Discord</a> or the
+  <u><a href="https://join.status.im/ens-collect">#ens-c</a>ollect</u> channel
+  within the Status application.
+</p>
+<p>
+  That’s it. Don’t forget to
+  <a href="https://claim.ens.domains/delegate-ranking"><u>delegate</u></a
+  >!
+</p>
+"
+
+<p></p>
+<p>In the words of Danny Ryan, Altair is here and the Merge is coming!</p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Finalized no. 29<a href="https://t.co/ssVYW3M8d7"
+        >https://t.co/ssVYW3M8d7</a
+      ><br /><br />Altair is here; the Merge is coming.<br /><br />tl;dr below
+    </p>
+    &mdash; dannyryan 🚂 (@dannyryan)
+    <a
+      href="https://twitter.com/dannyryan/status/1442873900652646405?ref_src=twsrc%5Etfw"
+      >September 28, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<p>We first simulated the merge back in April/May of this year.</p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      &gt; This is the first time all eth2 and eth1 clients communicated with
+      each other in an emulation of the merger which removes Proof of Work
+      miners and fully upgrades the network to Proof of Stake.<br /><br />eth2
+      progress deniers in disbelief
+      <a href="https://t.co/VGlWCI5d3v">https://t.co/VGlWCI5d3v</a>
+    </p>
+    &mdash; banteg (@bantg)
+    <a
+      href="https://twitter.com/bantg/status/1388609381869236227?ref_src=twsrc%5Etfw"
+      >May 1, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<p>
+  <br />Fast forwards 5 months and we're finally ready for a more realistic
+  follow-up.
+</p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      the merge is coming fast. THE MERGE Y&#39;ALL. arguably the largest event
+      in blockchain history since the bitcoin genesis block. It&#39;s proof that
+      together we can build a decentralized future, and (responsibly) improve
+      and innovate on the core infrastructure via rough social consensus
+      <a href="https://t.co/2h6GMKF2wJ">https://t.co/2h6GMKF2wJ</a>
+    </p>
+    &mdash; kassandra.eth (@RitualTypist)
+    <a
+      href="https://twitter.com/RitualTypist/status/1442888325535125510?ref_src=twsrc%5Etfw"
+      >September 28, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<p>
+  This time, the interop will
+  <a href="https://hackmd.io/@n0ble/merge-interop-spec">build off Altair</a>,
+  rather than Phase 0.<br />Importantly, we'll be testing the transition
+  mechanism that will take us from a pre to post merge world.
+</p>
+<figure class="kg-card kg-embed-card kg-card-hascaption">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Productionizing the Merge spec includes:<br />- Improving the Consensus
+      API (separating it from the user JSON-RPC)<br />- Implementing the logic
+      for the latest fork-transition approach<br />- Rebase the work onto
+      Altair/London upgrades
+    </p>
+    &mdash; proto.eth 🚂 🦇 🔊 (@protolambda)
+    <a
+      href="https://twitter.com/protolambda/status/1392448056591884288?ref_src=twsrc%5Etfw"
+      >May 12, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+  <figcaption>
+    The merge spec has just recently been "productionised"
+  </figcaption>
+</figure>
+<p><br />We also have a 5th client on the block  :)<br /></p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      LODESTAR JOINED THE 100% CLUB 😎 Max profitability for a full day on
+      Eth2.0 mainnet.<br /><br />*I test in prod* master
+      <a href="https://twitter.com/gregthegreek?ref_src=twsrc%5Etfw"
+        >@gregthegreek</a
+      >
+      plz enjoy your sweet rewards
+      <a href="https://twitter.com/ChainSafeth?ref_src=twsrc%5Etfw"
+        >@ChainSafeth</a
+      >
+      🚀🚀🚀🚀 <a href="https://t.co/e8RMR8fRdi">pic.twitter.com/e8RMR8fRdi</a>
+    </p>
+    &mdash; Lion ⟠ dapplion .eth (@dapplion)
+    <a
+      href="https://twitter.com/dapplion/status/1438882897260425217?ref_src=twsrc%5Etfw"
+      >September 17, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<h3 id="merge-quick-sync">Merge quick sync</h3>
+<p>
+  In general an Ethereum client consists of two layers - the consensus layer and
+  the execution layer.
+</p>
+<p>
+  The consensus layer is responsible for the consensus, i.e. block validity, and
+  fork choice rule. As it stands, on mainnet, we rely on PoW consensus. The
+  Merge enables PoS consensus driven by the beacon chain.
+</p>
+<p>
+  The execution-layer is responsible for transaction bundling, execution, and
+  state management. During the merge this layer will be represented by modified
+  pre-merge PoW clients (eg. geth, nethermind, besu, openethereum, turbogeth,
+  etc).
+</p>
+<p>
+  The key to a successful merge is getting these two layers to talk to each
+  other: the plan right now is for them to interact via a one-way communication
+  protocol, driven by the consensus layer (although this approach is not yet set
+  in stone).
+</p>
+<blockquote>
+  Note that if these layers are bundled into a single piece of software, then
+  the UX of running a post-merge client becomes very similar to running a
+  pre-merge PoW client today (which is precisely why we are working so hard on
+  building out
+  <a href="https://github.com/status-im/nimbus-eth1"
+    >our execution layer client</a
+  >).
+</blockquote>
+<p>
+  If you'd like to to dig into the details,
+  <a href="https://hackmd.io/@n0ble/merge-interop-spec">this document </a
+  >specifies the modifications that must be made to beacon chain and pre-merge
+  clients to turn them into a post-merge consensus node and execution engine,
+  respectively.
+</p>
+<h3 id="our-progress">Our progress</h3>
+<p>
+  We have passed all the
+  <a href="https://notes.ethereum.org/@9AeMAlpyQYaAAyuj47BzRw/rkwW3ceVY"
+    >merge spec tests</a
+  >. If you want to get your hands dirty, you can actually
+  <a
+    href="https://github.com/status-im/nimbus-eth2/blob/amphora-merge-interop/docs/interop_merge.md#verify-that-nimbus-runs-through-the-same-examples"
+    >verify this for yourself</a
+  >!
+</p>
+<p>
+  And while we're waiting for a compatible execution client, we have everything
+  you need to
+  <a
+    href="https://github.com/status-im/nimbus-eth2/blob/amphora-merge-interop/docs/interop_merge.md"
+    >start experimenting</a
+  >
+  on the consensus side.
+</p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Eager to get started with
+      <a
+        href="https://twitter.com/hashtag/themerge?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#themerge</a
+      >
+      experiments? Our interop branch has got everything you need for the
+      consensus side:
+      <a href="https://t.co/rRwO27kmaK">https://t.co/rRwO27kmaK</a>
+    </p>
+    &mdash; Nimbus (@ethnimbus)
+    <a
+      href="https://twitter.com/ethnimbus/status/1443943484893839370?ref_src=twsrc%5Etfw"
+      >October 1, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<p>
+  You can keep track of our broader progress
+  <a href="https://github.com/status-im/nimbus-eth2/issues/2859">here</a>.
+</p>
+<h3 id="interop-lock-in-round-2">Interop lock in: round 2</h3>
+<p>
+  In the <a href="https://t.co/97X85jdCzM?amp=1">words of Ben Edgington</a>, the
+  cat is out of the bag - the eth1 and eth2 client teams will be meeting up in
+  early October to get some Merge devnets running.
+</p>
+<p>
+  You can think of this as round 2 of the interop event we did two years ago.
+</p>
+<p>
+  Expect to hear a lot of updates from the client teams as we build out the
+  Merge logic and test our software together on short-lived devnets.
+</p>
+<p>
+  In anticipation, we'll leave you with some highlights from the previous
+  lockin.
+</p>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      <a
+        href="https://twitter.com/hashtag/Lighthouse?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#Lighthouse</a
+      >
+      and
+      <a href="https://twitter.com/ethnimbus?ref_src=twsrc%5Etfw">@ethnimbus</a>
+      just finalized a
+      <a
+        href="https://twitter.com/hashtag/Eth2?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#Eth2</a
+      >
+      epoch!<br /><br />As far as I know, this is the first instance of finality
+      on a multi-client Eth2 testnet!<br /><br />Thanks
+      <a href="https://twitter.com/protolambda?ref_src=twsrc%5Etfw"
+        >@protolambda</a
+      >,
+      <a href="https://twitter.com/dannyryan?ref_src=twsrc%5Etfw">@dannyryan</a>
+      for the help. Great work on the networking stack
+      <a href="https://twitter.com/AgeManning?ref_src=twsrc%5Etfw"
+        >@AgeManning</a
+      >
+      and
+      <a href="https://twitter.com/jcksie?ref_src=twsrc%5Etfw">@jcksie</a>!<a
+        href="https://twitter.com/hashtag/Eth2?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#Eth2</a
+      >
+      is coming!
+      <a href="https://t.co/vC5m9OuaT8">pic.twitter.com/vC5m9OuaT8</a>
+    </p>
+    &mdash; Paul Hauner (@paulhauner)
+    <a
+      href="https://twitter.com/paulhauner/status/1170952290469122048?ref_src=twsrc%5Etfw"
+      >September 9, 2019</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Artemis just achieved
+      <a
+        href="https://twitter.com/hashtag/interop?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#interop</a
+      >
+      with
+      <a href="https://twitter.com/ethnimbus?ref_src=twsrc%5Etfw">@ethnimbus</a>
+      <a href="https://t.co/JWkIg3XinW">pic.twitter.com/JWkIg3XinW</a>
+    </p>
+    &mdash; Joseph Delong 🔱 (@josephdelong)
+    <a
+      href="https://twitter.com/josephdelong/status/1171465845513408514?ref_src=twsrc%5Etfw"
+      >September 10, 2019</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Validator monitoring coming to an
+      <a href="https://twitter.com/ethnimbus?ref_src=twsrc%5Etfw">@ethnimbus</a>
+      near you *soon(TM)*:
+      <a href="https://t.co/x65lpxJ3t4">https://t.co/x65lpxJ3t4</a> - based on
+      the excellent and pioneering work done by
+      <a href="https://twitter.com/paulhauner?ref_src=twsrc%5Etfw"
+        >@paulhauner</a
+      >
+      / <a href="https://twitter.com/sigp_io?ref_src=twsrc%5Etfw">@sigp_io</a> -
+      by and large compatible metrics make dashboard/monitoring interop easier
+      too!
+    </p>
+    &mdash; Jacek Sieka (@jcksie)
+    <a
+      href="https://twitter.com/jcksie/status/1443568596865589248?ref_src=twsrc%5Etfw"
+      >September 30, 2021</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<figure class="kg-card kg-embed-card">
+  <blockquote class="twitter-tweet">
+    <p lang="en" dir="ltr">
+      Fully autonomous
+      <a
+        href="https://twitter.com/hashtag/eth2?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#eth2</a
+      >
+      beacon chain between
+      <a href="https://twitter.com/ethnimbus?ref_src=twsrc%5Etfw">@ethnimbus</a>
+      and
+      <a
+        href="https://twitter.com/hashtag/lighthouse?src=hash&amp;ref_src=twsrc%5Etfw"
+        >#lighthouse</a
+      >
+      on a pair of raspberries found in the Canadian wilderness!
+      <a href="https://t.co/Xkps1Yu3DS">pic.twitter.com/Xkps1Yu3DS</a>
+    </p>
+    &mdash; Jacek Sieka (@jcksie)
+    <a
+      href="https://twitter.com/jcksie/status/1171886857908609024?ref_src=twsrc%5Etfw"
+      >September 11, 2019</a
+    >
+  </blockquote>
+  <script
+    async
+    src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"
+  ></script>
+</figure>
+<p>
+  <em
+    >P.S. Keep your eyes peeled for an
+    <a href="https://blog.ethereum.org">Ethereum Foundation blogpost</a> on
+    Monday. This will include all mainnet Altair releases. We will also be
+    making a more formal Altair announcement next week.</em
+  >
+</p>
