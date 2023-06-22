@@ -34,7 +34,8 @@
     "react-dom": "^18.2.0",
     "react-native-web": "^0.18.12",
     "ts-pattern": "^4.3.0",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "react-tweet": "^2.0.2"
   },
   "devDependencies": {
     "@achingbrain/ssdp": "^4.0.1",
