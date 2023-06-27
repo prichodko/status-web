@@ -235,7 +235,7 @@ export default makeSource({
   onSuccess: async importData => {
     const { allDocs } = await importData()
 
-    const basePath = '/docs'
+    const publicBasePath = '/help'
     const index: DocIndex[] = []
 
     for (const doc of allDocs) {
@@ -244,12 +244,14 @@ export default makeSource({
           keep: ['heading'],
         })
         .use(remarkGfm)
-        .use(remarkIndexer, { path: basePath + '/' + doc._raw.flattenedPath })
+        .use(remarkIndexer, {
+          path: publicBasePath + '/' + doc._raw.flattenedPath,
+        })
         .process(doc.body.raw)
 
       index.push({
         title: doc.title,
-        path: basePath + '/' + doc._raw.flattenedPath,
+        path: publicBasePath + '/' + doc._raw.flattenedPath,
         content: result.data.index as DocIndex['content'],
       })
     }
