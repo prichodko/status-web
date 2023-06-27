@@ -5,37 +5,38 @@ import { cva } from 'class-variance-authority'
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 
 import type { VariantProps } from 'class-variance-authority'
+import { useState } from 'react'
+import { FullscreenSearch } from './fullscreen-search'
 
 type Props = {
   size: NonNullable<VariantProps<typeof styles>['size']>
 }
 
 export const SearchButton = (props: Props) => {
+  const [open, setOpen] = useState(false)
+
   useKeyboardShortcuts({
-    '$mod+K': () => {
-      console.log('search')
-    },
+    '$mod+K': () => setOpen(true),
   })
 
   return (
-    <button
-      className={styles(props)}
-      onClick={() => {
-        console.log('search')
-      }}
-    >
-      <span className="flex items-center gap-1">
-        <SearchIcon size={20} color="$neutral-50" />
-        <Text size={15} weight="medium">
-          Search
-        </Text>
-      </span>
+    <>
+      <button className={styles(props)} onClick={() => setOpen(true)}>
+        <span className="flex items-center gap-1">
+          <SearchIcon size={20} color="$neutral-50" />
+          <Text size={15} weight="medium">
+            Search
+          </Text>
+        </span>
 
-      <span className="flex gap-[2px]">
-        <Shortcut variant="secondary" icon={CommandIcon} />
-        <Shortcut variant="secondary" symbol="K" />
-      </span>
-    </button>
+        <span className="flex gap-[2px]">
+          <Shortcut variant="secondary" icon={CommandIcon} />
+          <Shortcut variant="secondary" symbol="K" />
+        </span>
+      </button>
+
+      {open && <FullscreenSearch onOpenChange={setOpen} />}
+    </>
   )
 }
 
