@@ -26,10 +26,7 @@ export const HighlightMatches = (props: Props) => {
         return (
           <mark
             key={idx}
-            style={{
-              background: 'yellow',
-              color: 'black',
-            }}
+            className="rounded-md bg-customisation-blue-50/10 px-1"
           >
             {value}
           </mark>
