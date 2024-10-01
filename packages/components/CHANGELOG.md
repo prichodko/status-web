@@ -1,5 +1,13 @@
 # @status-im/components
 
+## 1.0.1
+
+### Patch Changes
+
+- 447cce7c: fix `<DropdowMenu.SubTrigger />` expanded state
+- 1ce026c5: add `<DropdownMenu.Label />`
+- 433558a1: Add `<Switch />` and `<DropdownMenu.SwitchItem />`
+
 ## 1.0.0
 
 ### Major Changes
